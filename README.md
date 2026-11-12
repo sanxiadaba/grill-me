@@ -1,63 +1,43 @@
 # grill-me
 
-A grilling skill for agents that can ask structured questions: it interviews you one
-decision at a time, through a real question card, until the plan has no silent
-assumptions left.
+一个给「能弹卡片提问」的 agent 用的追问 skill：一次只问一个决策，直到方案里没有默认假设。
 
-Most "grill me" prompts fail in two predictable ways: the agent dumps four questions
-into one message, or it asks in prose and waits for you to type a reply. Both look like
-an interview and behave like a wall of text. This skill is a small contract that rules
-them out.
+多数「拷问我」的提示词有两种典型失败：把四个问题塞进一条消息，或者用正文提问、等你打字回复。看起来像访谈，实际是一堵墙。这个 skill 用一份很小的约定把它们排除掉。
 
-## Behavior contract
+## 约定
 
-- **One question per turn.** Exactly one question tool call, exactly one item in it.
-- **Through the question tool.** The card is what makes the answer structured; prose
-  questions are not a fallback, they are the failure mode this skill removes.
-- **Recommendation first.** Every question carries your options ranked, the recommended
-  one first, with a one-line reason.
-- **Facts are the agent's job.** If it can be read from disk, the repo or the web, the
-  agent looks it up instead of asking you.
-- **Stop and wait.** No self-answering, no planning ahead on an assumed answer.
+- **一轮一问。** 一次提问调用，只带一个问题。
+- **走提问工具。** 卡片才是让回答结构化的东西；正文提问不是退路，是本 skill 要消灭的失败形态。
+- **推荐在前。** 每个问题都带排序选项，推荐项第一，附一句理由。
+- **事实归 agent。** 能读的一律先查，不问你。
+- **问完就停。** 不自问自答，不按假设往下规划。
 
-The interview runs over a **design tree**: each answer settles a decision and unlocks the
-questions that depended on it. The set of currently askable decisions is the *frontier*,
-and the agent pops it one item at a time instead of batching.
+访谈沿一棵**决策树**推进：每个答案敲定一个决策，解锁依赖它的那些问题；当前能问的集合就是前沿，逐个弹出，而不是成批抛出。
 
-## Install
-
-Copy the directory into a scanned skill root:
+## 安装
 
 ```powershell
 git clone https://github.com/sanxiadaba/grill-me.git "$env:USERPROFILE\.agents\skills\grill-me"
 ```
 
-DSH scans `~/.agents/skills` (rank 500) and watches it, so the skill appears without a
-restart. For Claude Code, place it in `~/.claude/skills/grill-me` instead.
+DSH 扫描 `~/.agents/skills`（rank 500）并带 watcher，装好即生效、不用重启。Claude Code 放到 `~/.claude/skills/grill-me`。
 
-## Usage
+## 用法
 
 ```
 /grill-me
 ```
 
-Then state the plan, feature, or decision you want stress-tested. Expect one card per
-round, not a questionnaire.
+然后说你要被盘问的方案、功能或决策。预期是每轮一张卡，而不是一张问卷。
 
-## Compatibility
+## 兼容性
 
-The skill is written against the `ask_user_question` tool, which is the DSH name for a
-structured question card, and it has no plain-text fallback: on a host without such a
-tool the interview cannot run, so the skill does not apply. Claude Code's equivalent is
-`AskUserQuestion`; substituting that name is the whole port.
+skill 写死了 DSH 的 `ask_user_question` 工具，并且没有纯文本退路：没有结构化提问工具的宿主上，访谈跑不起来，这个 skill 就不适用。Claude Code 的等价物是 `AskUserQuestion`，改个名字就是全部移植工作。
 
-`disable-model-invocation: true` keeps the skill out of the model's automatic catalog:
-you invoke it, it does not volunteer.
+`disable-model-invocation: true` 让它不进入模型目录：由你手动调用，模型不会自己触发。
 
-## License
+## 许可
 
-MIT. See [LICENSE](LICENSE).
+MIT，见 [LICENSE](LICENSE)。
 
-The interview method (design tree, frontier, one question at a time) is derived from the
-`grilling` skill in [mattpocock/skills](https://github.com/mattpocock/skills) (MIT,
-Copyright (c) 2026 Matt Pocock). See [NOTICE](NOTICE).
+访谈方法（决策树、前沿、一次一问）改编自 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `grilling`（MIT，Copyright (c) 2026 Matt Pocock），详见 [NOTICE](NOTICE)。

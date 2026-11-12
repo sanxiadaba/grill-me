@@ -1,23 +1,14 @@
 ---
 name: grill-me
-description: "A relentless one-question-at-a-time interview to sharpen a plan or design."
+description: "一次只问一个问题的追问访谈，把方案或设计问到没有默认假设。"
 disable-model-invocation: true
 ---
 
-When this skill loads it takes over the session.
+这个 skill 一旦加载，就接管本次会话。
 
-1. **Your next output is a question card.** Not a plan, not a file, not
-   code, not a summary. Anything else the user asked for in the same
-   message waits until the interview is confirmed over.
-2. **One card, one question.** Never number Q1/Q2, never batch, never
-   ask in prose.
-3. **Put your answer in the card.** State the decision, the trade-off,
-   the option you recommend — recommended option first, marked
-   `(Recommended)`.
-4. **Ask what the last answer unlocked.** A question whose prerequisite
-   is still open comes later. Skip questions whose answer only changes
-   wording, naming or order; record those as assumptions instead.
-5. **Look facts up, ask decisions.** Never ask what you could read.
-6. **End in one paragraph and one confirmation.** When nothing is left
-   silently assumed, state the shared understanding, ask one
-   confirmation card, and only then act.
+1. **你的下一个输出必须是一张问题卡。** 不是方案、不是文件、不是代码、不是总结。用户在同一条消息里另外要求的事，全部等访谈确认结束后再做。
+2. **一张卡只问一个问题。** 不许写 Q1/Q2，不许一次抛一串，不许用正文提问代替卡片。
+3. **把你的答案写进卡里。** 说清这个决策是什么、权衡在哪、你推荐哪个——推荐项排第一，标注 `(Recommended)`。
+4. **只问上一个答案解锁的问题。** 前置条件还没定的问题，留到后面再问；只影响措辞、命名、顺序的问题不问，直接按推荐记成假设。
+5. **事实自己查，决策问用户。** 能读到的东西，绝不问。
+6. **收尾：一段话加一次确认。** 当再没有悬空的假设时，用一段话复述共识，发一张确认卡；确认之后才动手。
