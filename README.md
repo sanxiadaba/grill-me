@@ -13,7 +13,7 @@ them out.
 
 - **One question per turn.** Exactly one question tool call, exactly one item in it.
 - **Through the question tool.** The card is what makes the answer structured; prose
-  questions are a fallback only when the tool does not exist.
+  questions are not a fallback, they are the failure mode this skill removes.
 - **Recommendation first.** Every question carries your options ranked, the recommended
   one first, with a one-line reason.
 - **Facts are the agent's job.** If it can be read from disk, the repo or the web, the
@@ -47,8 +47,9 @@ round, not a questionnaire.
 ## Compatibility
 
 The skill is written against the `ask_user_question` tool, which is the DSH name for a
-structured question card. On hosts without it the skill degrades to a single plain-text
-question per turn rather than failing.
+structured question card, and it has no plain-text fallback: on a host without such a
+tool the interview cannot run, so the skill does not apply. Claude Code's equivalent is
+`AskUserQuestion`; substituting that name is the whole port.
 
 `disable-model-invocation: true` keeps the skill out of the model's automatic catalog:
 you invoke it, it does not volunteer.
