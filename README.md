@@ -1,18 +1,17 @@
 # grill-me
 
-一个给「能弹卡片提问」的 agent 用的追问 skill：一次只问一个决策，直到方案里没有默认假设。
+给「能弹卡片提问」的 agent 用的追问 skill：一次一个决策，沿决策树问到底，直到方案里没有默认假设。
 
-多数「拷问我」的提示词有两种典型失败：把四个问题塞进一条消息，或者用正文提问、等你打字回复。看起来像访谈，实际是一堵墙。这个 skill 用一份很小的约定把它们排除掉。
+方法来自 Matt Pocock 的 [grilling](https://github.com/mattpocock/skills)，主干保留——设计树、前沿、事实归 agent、决策归用户、确认前不动手。只改了一处：原版一次问完整个前沿，这里改成一次一张卡、只问一个问题。在对话界面里成批抛问题，会把「思考」降级成「填表」。
 
-## 约定
+## 怎么工作
 
-- **一轮一问。** 一次提问调用，只带一个问题。
-- **走提问工具。** 卡片才是让回答结构化的东西；正文提问不是退路，是本 skill 要消灭的失败形态。
-- **推荐在前。** 每个问题都带排序选项，推荐项第一，附一句理由。
-- **事实归 agent。** 能读的一律先查，不问你。
-- **问完就停。** 不自问自答，不按假设往下规划。
-
-访谈沿一棵**决策树**推进：每个答案敲定一个决策，解锁依赖它的那些问题；当前能问的集合就是前沿，逐个弹出，而不是成批抛出。
+- **设计树**：每个决策分叉出挂在它下面的决策。
+- **前沿**：前置已定、现在就能问的那批决策。每答一次，前沿往外推一截。
+- **一轮一问**：一张卡只放一个问题，附推荐答案；问题写成「是」就等于接受推荐。
+- **事实归 agent**：需要环境事实就派子 agent 去查，不问你。
+- **决策归你**：逐个交给你，然后等。
+- **确认前不动手**：前沿空了才复述共识、请求确认，确认之后才执行。
 
 ## 安装
 
@@ -32,7 +31,7 @@ DSH 扫描 `~/.agents/skills`（rank 500）并带 watcher，装好即生效、�
 
 ## 兼容性
 
-skill 写死了 DSH 的 `ask_user_question` 工具，并且没有纯文本退路：没有结构化提问工具的宿主上，访谈跑不起来，这个 skill 就不适用。Claude Code 的等价物是 `AskUserQuestion`，改个名字就是全部移植工作。
+skill 写死了 DSH 的 `ask_user_question`，没有纯文本退路：宿主没有结构化提问工具时，这个 skill 不适用。Claude Code 的等价物是 `AskUserQuestion`，改个名字就是全部移植工作。
 
 `disable-model-invocation: true` 让它不进入模型目录：由你手动调用，模型不会自己触发。
 
@@ -40,4 +39,4 @@ skill 写死了 DSH 的 `ask_user_question` 工具，并且没有纯文本退路
 
 MIT，见 [LICENSE](LICENSE)。
 
-访谈方法（决策树、前沿、一次一问）改编自 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `grilling`（MIT，Copyright (c) 2026 Matt Pocock），详见 [NOTICE](NOTICE)。
+访谈方法改编自 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `grilling`（MIT，Copyright (c) 2026 Matt Pocock），详见 [NOTICE](NOTICE)。
